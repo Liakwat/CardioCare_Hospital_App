@@ -7,6 +7,10 @@ public class Doctors {
     String SpecialityId;
     String specialityFullName;
 
+    public Doctors(){
+
+    }
+
     public Doctors(String employeeId, String employeeFullName, String shortBio, String specialityId, String specialityFullName) {
         this.employeeId = employeeId;
         this.employeeFullName = employeeFullName;

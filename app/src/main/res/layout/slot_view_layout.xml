@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_margin="5dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
-            android:id="@+id/dr_name"
+            android:id="@+id/time_slot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="title"
@@ -20,21 +23,14 @@
             android:gravity="center"/>
 
         <TextView
-            android:id="@+id/dr_employeeId"
+            android:id="@+id/serial_num"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Body"
             android:textSize="18sp"
             />
         <TextView
-            android:id="@+id/dr_speciality"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Body"
-            android:textSize="18sp"
-            />
-        <TextView
-            android:id="@+id/dr_bio"
+            android:id="@+id/booked"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Body"
@@ -44,4 +40,4 @@
     </LinearLayout>
 
 
-    </android.support.v7.widget.CardView>
+</android.support.v7.widget.CardView>

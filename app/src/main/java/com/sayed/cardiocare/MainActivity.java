@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +19,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.sayed.cardiocare.Adapter.ListAdapterWithRecycleView;
+import com.sayed.cardiocare.Models.Doctors;
 import com.sayed.cardiocare.app.AppController;
 
 import org.json.JSONArray;
@@ -35,27 +38,36 @@ public class MainActivity extends AppCompatActivity {
     Spinner customSpinner;
     HashMap<String,String> speciality;
     ArrayList<String> specialityName;
+    ArrayList<Doctors> doctorsList;
+    ListAdapterWithRecycleView listAdapterWithRecycleView;
+    LinearLayoutManager linearLayoutManager;
+    RecyclerView recyclerView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tv = findViewById(R.id.display);
+//        tv = findViewById(R.id.display);
         customSpinner = (Spinner) findViewById(R.id.speciality_spinner);
+        recyclerView =(RecyclerView) findViewById(R.id.recycleListView);
 
         specialityName = new ArrayList<>();
         speciality = new HashMap<>();
+        doctorsList = new ArrayList<>();
 
         getAllSpeciality();
-
-        getDoctorsSchedule("E000024");
 
         customSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String value = parent.getItemAtPosition(position).toString();
-                getDoctorsBySpeciality(speciality.get(value));
+                clear();
+                if(value.equals("All")){
+                    getAllDoctor();
+                }else {
+                    getDoctorsBySpeciality(speciality.get(value));
+                }
             }
 
             @Override
@@ -64,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void clear() {
+        final int size = doctorsList.size();
+        doctorsList.clear();
     }
 
     public void getAllSpeciality(){
@@ -98,28 +115,6 @@ public class MainActivity extends AppCompatActivity {
                         ArrayAdapter<String> customSpinAdap = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, specialityName);
                         customSpinAdap.setDropDownViewResource(R.layout.custom_dropdown);
                         customSpinner.setAdapter(customSpinAdap);
-//                        tv.setText(speciality.get("636703695615967302"));
-
-                        ////                            textView.setText(response.getJSONObject("links").getString("first")+"");
-//                            textView.setText(response.getJSONArray("data").get(3).toString()+"");
-
-//                            link = gson.fromJson(String.valueOf(response.getJSONObject("links")),Links.class);
-//                            meta = gson.fromJson(String.valueOf(response.getJSONObject("meta")),Meta.class);
-//                            JSONArray posts = response.getJSONArray("data");
-//
-//                            for (int i = 0; i < posts.length(); i++) {
-//                                Post post = (Post) gson.fromJson(String.valueOf(posts.getJSONObject(i)), Post.class);
-//                                postArrayList.add(post);
-//                            }
-//
-//                            pagination();
-//
-//                            listAdapterWithRecycleView = new ListAdapterWithRecycleView(ViewActivity.this,postArrayList);
-//                            linearLayoutManager = new LinearLayoutManager(ViewActivity.this,LinearLayoutManager.VERTICAL,false);
-//                            LinearLayoutManager layoutManager=new LinearLayoutManager(ViewActivity.this);
-//                            recyclerView.setLayoutManager(linearLayoutManager);
-//                            recyclerView.setAdapter(listAdapterWithRecycleView);
-
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -154,19 +149,29 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.d("Response", response.toString());
                         pDialog.hide();
-//                        specialityName.add("All");
+
                         for (int i = 0; i < response.length(); i++) {
+
                             try {
-
-                                tv.append(response.getJSONObject(i).getString("employeeId")+" :"+response.getJSONObject(i).getJSONObject("hrM_EmployeeInfo").getString("employeeFullName")+" ");
-
+                                Doctors doctor = new Doctors(
+                                        response.getJSONObject(i).getString("employeeId"),
+                                        response.getJSONObject(i).getJSONObject("hrM_EmployeeInfo").getString("employeeFullName"),
+                                        response.getJSONObject(i).getString("shortBio"),
+                                        response.getJSONObject(i).getString("specialityId"),
+                                        response.getJSONObject(i).getJSONObject("doctorSpeciality").getString("specialityFullName")
+                                );
+                                doctorsList.add(doctor);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
                         }
-//                        ArrayAdapter<String> customSpinAdap = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, specialityName);
-//                        customSpinAdap.setDropDownViewResource(R.layout.custom_dropdown);
-//                        customSpinner.setAdapter(customSpinAdap);
+
+                        listAdapterWithRecycleView = new ListAdapterWithRecycleView(MainActivity.this,doctorsList);
+                        linearLayoutManager = new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false);
+                        LinearLayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
+                        recyclerView.setLayoutManager(linearLayoutManager);
+                        recyclerView.setAdapter(listAdapterWithRecycleView);
 
 
 
@@ -184,12 +189,11 @@ public class MainActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonObjReq, tag_json_obj);
     }
 
-
-    public void getDoctorsSchedule(String id){
-
+    public void getAllDoctor(){
+        //getting all the posts
         // Tag used to cancel the request
         String tag_json_obj = "json_array_req";
-        String url ="http://103.86.197.83/api.appointment.ecure24.com/api/scheduleSlots/doctor/"+id+"/fromDate/2019-03-17/next/3";
+        String url ="http://103.86.197.83/api.appointment.ecure24.com/api/doctors";
 
         final ProgressDialog pDialog = new ProgressDialog(this);
         pDialog.setMessage("Loading...");
@@ -205,22 +209,28 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.d("Response", response.toString());
                         pDialog.hide();
-//                        specialityName.add("All");
+
                         for (int i = 0; i < response.length(); i++) {
+
                             try {
-
-                                tv.append(response.getJSONObject(i).getString("date")+" :"+response.getJSONObject(i).getString("slotMppingId")+" ");
-
+                                Doctors doctor = new Doctors(
+                                        response.getJSONObject(i).getString("employeeId"),
+                                        response.getJSONObject(i).getJSONObject("hrM_EmployeeInfo").getString("employeeFullName"),
+                                        response.getJSONObject(i).getString("shortBio"),
+                                        response.getJSONObject(i).getString("specialityId"),
+                                        response.getJSONObject(i).getJSONObject("doctorSpeciality").getString("specialityFullName")
+                                );
+                                doctorsList.add(doctor);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
                         }
-//                        ArrayAdapter<String> customSpinAdap = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, specialityName);
-//                        customSpinAdap.setDropDownViewResource(R.layout.custom_dropdown);
-//                        customSpinner.setAdapter(customSpinAdap);
-
-
-
+                        listAdapterWithRecycleView = new ListAdapterWithRecycleView(MainActivity.this,doctorsList);
+                        linearLayoutManager = new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false);
+                        LinearLayoutManager layoutManager=new LinearLayoutManager(MainActivity.this);
+                        recyclerView.setLayoutManager(linearLayoutManager);
+                        recyclerView.setAdapter(listAdapterWithRecycleView);
                     }
                 }, new Response.ErrorListener() {
             @Override
