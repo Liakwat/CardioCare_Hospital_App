@@ -47,18 +47,37 @@
 
         </LinearLayout>
 
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnDatePicker"
+    <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:onClick="showFragment"
-        android:text="Pick a date" />
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:onClick="showFragment"
+                android:src="@drawable/calendar"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calander"
+                android:layout_gravity="center"
+                android:textSize="18sp"
+                />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
 
     <TextView
         android:id="@+id/date"

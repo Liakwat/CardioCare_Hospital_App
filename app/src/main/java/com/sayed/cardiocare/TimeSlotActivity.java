@@ -68,7 +68,7 @@ public class TimeSlotActivity extends AppCompatActivity implements DatePickerFra
             dr_id = findViewById(R.id.dr_id);
             dr_sp = findViewById(R.id.dr_sp);
 
-            showFragment = (Button) findViewById(R.id.btnDatePicker);
+//            showFragment = (Button) findViewById(R.id.btnDatePicker);
             recyclerView = findViewById(R.id.recycleListView);
 
             slotLists = new ArrayList<>();

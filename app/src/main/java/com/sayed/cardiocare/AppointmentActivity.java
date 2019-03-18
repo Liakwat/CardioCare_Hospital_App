@@ -112,7 +112,7 @@ public class AppointmentActivity extends AppCompatActivity {
     RadioGroup services,sex;
     HashMap<String,String> serviceId;
     String sexVar;
-
+    String selectedServiceId;
     EditText name,age,mobile;
 
 
@@ -149,14 +149,17 @@ public class AppointmentActivity extends AppCompatActivity {
                 if(checkedId == R.id.fst){
 
                     tv.setText(serviceId.get("1st Visit"));
+                    selectedServiceId = serviceId.get("1st Visit");
 
                 }else if(checkedId == R.id.scnd){
 
                     tv.setText(serviceId.get("2nd Visit"));
+                    selectedServiceId = serviceId.get("2nd Visit");
 
                 }else if(checkedId == R.id.report){
 
                     tv.setText(serviceId.get("Report Check"));
+                    selectedServiceId = serviceId.get("Report Check");
 
                 }
             }
@@ -213,122 +216,13 @@ public class AppointmentActivity extends AppCompatActivity {
 //        Log.i("json",json);
 
 
-                // Post request
-//        String tag_json_obj = "json_obj_req";
-//        String url ="http://103.86.197.83/api.appointment.ecure24.com/api/appointments";
-
-
-//        Map<String, String> params = new HashMap<String, String>();
-//        params.put("title", "title from Android");
-//        params.put("body", "Android body good one");
-
-        /*
-{
-    "appointment_Schedule_Day_Slot_MappingId": "636711476987797174",
-    "doctorId": "E000024",
-    "visitedDate": "2019-03-19",
-    "timeSlot": "18:00:00",
-    "patientInfo": {
-        "sex": "male",
-        "patientName": "test by siddik",
-        "age2": 35,
-        "addressInfo": {
-            "mobile": "01847140114"
-        }
-    },
-    "consultationMainServiceCharges": "636711476987797168"
-}
-*/
-
-//        JSONObject address = new JSONObject();
-//        JSONObject patientObj = new JSONObject();
-//        JSONObject rootObj = new JSONObject();
-//        try {
-//            address.put("mobile","01847140114");
-//
-//            patientObj.put("sex","male");
-//            patientObj.put("patientName","sayed");
-//            patientObj.put("age2","32");
-//            patientObj.put("addressInfo",address);
-//
-//
-//            rootObj.put("appointment_Schedule_Day_Slot_MappingId", "636711476987797174");
-//            rootObj.put("doctorId", "E000024");
-//            rootObj.put("visitedDate", "2019-03-19");
-//            rootObj.put("timeSlot", "18:10:00");
-//            rootObj.put("consultationMainServiceCharges", "636711476987797168");
-//            rootObj.put("patientInfo", patientObj);
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Log.i("datatta",rootObj.toString());
-//
-//
-//            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-//                    url, rootObj,
-//                    new Response.Listener<JSONObject>() {
-//
-//                        @Override
-//                        public void onResponse(JSONObject response) {
-//
-//                            Log.i("Response",response.toString());
-//                            tv.setText(response.toString());
-//
-//                        }
-//                    }, new Response.ErrorListener() {
-//
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//
-//                    // As of f605da3 the following should work
-//                    NetworkResponse response = error.networkResponse;
-//                    if (error instanceof ServerError && response != null) {
-//                        try {
-//                            String res = new String(response.data,
-//                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
-//                            // Now you can use any deserializer to make sense of data
-//                            JSONObject obj = new JSONObject(res);
-//                            tv.setText(res);
-//                        } catch (UnsupportedEncodingException e1) {
-//                            // Couldn't properly decode data to string
-//                            e1.printStackTrace();
-//                        } catch (JSONException e2) {
-//                            // returned data is not JSONObject?
-//                            e2.printStackTrace();
-//                        }
-//                    }
-//
-//                }
-//
-//            })
-//            {
-//                /**
-//                 * Passing some request headers
-//                 * */
-//                @Override
-//                public Map<String, String> getHeaders() throws AuthFailureError {
-//                    HashMap<String, String> headers = new HashMap<String, String>();
-//                    headers.put("Content-Type", "application/json; charset=utf-8");
-//                    return headers;
-//                }
-//
-//            }
-//            ;
-//
-//            // Adding request to request queue
-//            AppController.getInstance().addToRequestQueue(jsonObjReq, tag_json_obj);
-
-
-
-
     }
 
     public void click(View v){
 
-        getConsultationMainServiceCharges(drId);
-        tv.setText(serviceId.toString()+"");
+//        getConsultationMainServiceCharges(drId);
+//        tv.setText(serviceId.toString()+"");
+        requestForAppointment();
     }
 
 
@@ -380,6 +274,111 @@ public class AppointmentActivity extends AppCompatActivity {
 
 // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq, tag_json_obj);
+
+    }
+
+    public void requestForAppointment(){
+        // Post request
+        String tag_json_obj = "json_obj_req";
+        String url ="http://103.86.197.83/api.appointment.ecure24.com/api/appointments";
+/*
+{
+    "appointment_Schedule_Day_Slot_MappingId": "636711476987797174",
+    "doctorId": "E000024",
+    "visitedDate": "2019-03-19",
+    "timeSlot": "18:00:00",
+    "patientInfo": {
+        "sex": "male",
+        "patientName": "test by siddik",
+        "age2": 35,
+        "addressInfo": {
+            "mobile": "01847140114"
+        }
+    },
+    "consultationMainServiceCharges": "636711476987797168"
+}
+*/
+
+        JSONObject address = new JSONObject();
+        JSONObject patientObj = new JSONObject();
+        JSONObject rootObj = new JSONObject();
+        try {
+            address.put("mobile",mobile.getText().toString().trim());
+
+            patientObj.put("sex",sexVar);
+            patientObj.put("patientName",name.getText().toString().trim());
+            patientObj.put("age2",age.getText().toString().trim());
+            patientObj.put("addressInfo",address);
+
+
+            rootObj.put("appointment_Schedule_Day_Slot_MappingId", slotId);
+            rootObj.put("doctorId", drId);
+            rootObj.put("visitedDate", visitDate);
+            rootObj.put("timeSlot", timeSlot);
+            rootObj.put("consultationMainServiceCharges", selectedServiceId);
+            rootObj.put("patientInfo", patientObj);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.i("datatta",rootObj.toString());
+        tv.setText(rootObj.toString()+"");
+
+
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                    url, rootObj,
+                    new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            Log.i("Response",response.toString());
+                            tv.setText(response.toString());
+
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    // As of f605da3 the following should work
+                    NetworkResponse response = error.networkResponse;
+                    if (error instanceof ServerError && response != null) {
+                        try {
+                            String res = new String(response.data,
+                                    HttpHeaderParser.parseCharset(response.headers, "utf-8"));
+                            // Now you can use any deserializer to make sense of data
+                            JSONObject obj = new JSONObject(res);
+                            tv.setText(res);
+                        } catch (UnsupportedEncodingException e1) {
+                            // Couldn't properly decode data to string
+                            e1.printStackTrace();
+                        } catch (JSONException e2) {
+                            // returned data is not JSONObject?
+                            e2.printStackTrace();
+                        }
+                    }
+
+                }
+
+            })
+            {
+                /**
+                 * Passing some request headers
+                 * */
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Content-Type", "application/json; charset=utf-8");
+                    return headers;
+                }
+
+            }
+            ;
+
+            // Adding request to request queue
+            AppController.getInstance().addToRequestQueue(jsonObjReq, tag_json_obj);
 
     }
 
