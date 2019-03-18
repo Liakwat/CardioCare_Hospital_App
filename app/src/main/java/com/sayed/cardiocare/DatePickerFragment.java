@@ -56,10 +56,19 @@ public class DatePickerFragment extends DialogFragment {
                 public void onDateSet(DatePicker view, int year, int month, int day) {
                     /**Show Toast when Select any Date**/
                     Toast.makeText(getActivity(), "Selected date is " + view.getYear() + " / " + (view.getMonth() + 1) + " / " + view.getDayOfMonth(), Toast.LENGTH_SHORT).show();
-                    String value =view.getYear() + "-" + (view.getMonth() + 1) + "-" + view.getDayOfMonth();
 
-                    String newstring = new SimpleDateFormat("yyyy-MM-dd").format(value);
-                    DatePickerFragment.mListener.onComplete(newstring);
+                    String m = (view.getMonth() + 1)+"";
+                    String d = view.getDayOfMonth()+"";
+
+                    if(m.length()<2){
+                        m = "0"+m;
+                    }
+                    if(d.length()<2){
+                        d = "0"+d;
+                    }
+                    String value =view.getYear() + "-" + m + "-" + d;
+
+                    DatePickerFragment.mListener.onComplete(value);
                 }
             };
 }
