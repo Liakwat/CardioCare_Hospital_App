@@ -1,10 +1,13 @@
 package com.sayed.cardiocare.Models;
+
+import java.io.Serializable;
+
 /*
 "receiptNo": "PL20170000002",
 "registrationID": "000001-01-15",
 "receiptDateTime": "2017-07-14T16:54:42.007"
 */
-public class LabReportModel {
+public class LabReportModel implements Serializable {
     String receiptNo;
     String registrationID;
     String receiptDateTime;

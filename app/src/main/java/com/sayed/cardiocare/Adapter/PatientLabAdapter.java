@@ -10,7 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sayed.cardiocare.AppointmentActivity;
+import com.sayed.cardiocare.LabReportDetailActivity;
 import com.sayed.cardiocare.Models.LabReportModel;
+import com.sayed.cardiocare.Models.LoggedpatientDetail;
 import com.sayed.cardiocare.Models.TimeSlot;
 import com.sayed.cardiocare.R;
 
@@ -25,11 +27,13 @@ public class PatientLabAdapter extends RecyclerView.Adapter<PatientLabAdapter.Vi
     private static final String TAG = ListAdapterWithRecycleView.class.getSimpleName();
 
     private List<LabReportModel> list;
+    private LoggedpatientDetail patientObj;
     private Context context;
 
-    public PatientLabAdapter(Context context, List<LabReportModel> list){
+    public PatientLabAdapter(Context context, List<LabReportModel> list, LoggedpatientDetail patientObj){
         this.list = list;
         this.context=context;
+        this.patientObj = patientObj;
     }
 
 
@@ -85,15 +89,13 @@ public class PatientLabAdapter extends RecyclerView.Adapter<PatientLabAdapter.Vi
 //                    // check if item still exists
                         if(pos != RecyclerView.NO_POSITION){
 
-//                            Intent intent = new Intent(context, AppointmentActivity.class);
-//                            intent.putExtra("slot_map_id",list.get(pos).getSlotId());
-//                            intent.putExtra("time_slot",list.get(pos).getTimeSlot());
-//                            intent.putExtra("dr_id",list.get(pos).getDrId());
-//                            intent.putExtra("visit_date",list.get(pos).getVisitDate());
-//
-//                            context.startActivity(intent);
+                            Intent intent = new Intent(context, LabReportDetailActivity.class);
+                            intent.putExtra("reportObj",list.get(pos));
+                            intent.putExtra("patientObj",patientObj);
 
-                            Toast.makeText(context, "selected "+pos, Toast.LENGTH_SHORT).show();
+                            context.startActivity(intent);
+
+//                            Toast.makeText(context, "selected "+pos, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

@@ -65,7 +65,7 @@ public class PatientDetailActivity extends AppCompatActivity {
         pId.setText("Id: "+patient.getUserId());
         pPhone.setText("Phone: "+patient.getPhoneNumber());
 
-        requestForLabs(patient.getToken());
+        requestForLabs(patient.getToken(),patient);
     }
 
     public void appointmentClicker(View v){
@@ -73,7 +73,7 @@ public class PatientDetailActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void requestForLabs(final String accesstoken){
+    public void requestForLabs(final String accesstoken, final LoggedpatientDetail patientObj){
         // Post request
         String tag_json_obj = "json_obj_req";
         String url ="http://203.190.9.108/api.paitent.ecure24.com/api/Labs";
@@ -94,7 +94,7 @@ public class PatientDetailActivity extends AppCompatActivity {
                             }
                         }
 
-                        patientLabAdapter = new PatientLabAdapter(PatientDetailActivity.this,labLists);
+                        patientLabAdapter = new PatientLabAdapter(PatientDetailActivity.this,labLists,patientObj);
                         linearLayoutManager = new LinearLayoutManager(PatientDetailActivity.this,LinearLayoutManager.HORIZONTAL,false);
                         recyclerView.setLayoutManager(linearLayoutManager);
                         recyclerView.setAdapter(patientLabAdapter);
