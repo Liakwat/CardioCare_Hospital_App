@@ -42,8 +42,8 @@ import java.util.Locale;
 
 public class TimeSlotActivity extends AppCompatActivity implements DatePickerFragment.OnCompleteListener{
 
-        Button showFragment;
-        TextView date, dr_name, dr_sp, dr_id;
+    Button showFragment;
+    TextView date, dr_name, dr_sp, dr_id;
     TimeSlotAdapter timeSlotAdapter;
     LinearLayoutManager linearLayoutManager;
     RecyclerView recyclerView;
@@ -55,9 +55,7 @@ public class TimeSlotActivity extends AppCompatActivity implements DatePickerFra
     static String visitDate;
     static String consultationMainServiceCharges;
 
-
-
-     ArrayList<TimeSlot> slotLists;
+    ArrayList<TimeSlot> slotLists;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {

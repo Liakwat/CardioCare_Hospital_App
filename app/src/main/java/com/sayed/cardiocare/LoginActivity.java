@@ -1,5 +1,6 @@
 package com.sayed.cardiocare;
 
+        import android.content.Intent;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.util.Log;
@@ -15,6 +16,7 @@ package com.sayed.cardiocare;
         import com.android.volley.VolleyError;
         import com.android.volley.toolbox.HttpHeaderParser;
         import com.android.volley.toolbox.JsonObjectRequest;
+        import com.sayed.cardiocare.Models.LoggedpatientDetail;
         import com.sayed.cardiocare.app.AppController;
 
         import org.json.JSONException;
@@ -83,8 +85,24 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        Log.i("Response",response.toString());
-                        tv.setText(response.toString());
+                        try {
+                            if(response.getJSONObject("tokens").getString("accessToken") != null){
+
+                                String token = response.getJSONObject("tokens").getString("accessToken");
+                                String userId = response.getJSONObject("user").getString("id");
+                                String phoneNumber = response.getJSONObject("user").getString("phoneNumber");
+                                String userName = response.getJSONObject("user").getString("userName");
+
+                                LoggedpatientDetail loggedpatientDetail = new LoggedpatientDetail(token,userId,phoneNumber,userName);
+
+                                Intent i = new Intent(LoginActivity.this, PatientDetailActivity.class);
+                                i.putExtra("patientObj",loggedpatientDetail);
+                                startActivity(i);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
                     }
                 }, new Response.ErrorListener() {
@@ -100,7 +118,8 @@ public class LoginActivity extends AppCompatActivity {
                                 HttpHeaderParser.parseCharset(response.headers, "utf-8"));
                         // Now you can use any deserializer to make sense of data
                         JSONObject obj = new JSONObject(res);
-                        tv.setText(res);
+                        idEt.setError(obj.getJSONArray("messages").get(0)+"");
+                        passEt.setError(obj.getJSONArray("messages").get(0)+"");
                     } catch (UnsupportedEncodingException e1) {
                         // Couldn't properly decode data to string
                         e1.printStackTrace();
