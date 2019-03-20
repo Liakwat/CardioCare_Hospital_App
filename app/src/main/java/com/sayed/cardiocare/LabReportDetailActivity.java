@@ -1202,10 +1202,12 @@
 */
 package com.sayed.cardiocare;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1218,7 +1220,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.sayed.cardiocare.Adapter.LabReportAdapter;
 import com.sayed.cardiocare.Adapter.PatientLabAdapter;
+import com.sayed.cardiocare.Models.DetailLabReport;
 import com.sayed.cardiocare.Models.LabReportModel;
 import com.sayed.cardiocare.Models.LoggedpatientDetail;
 import com.sayed.cardiocare.app.AppController;
@@ -1228,6 +1232,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -1242,12 +1247,21 @@ public class LabReportDetailActivity extends AppCompatActivity {
                                    "totalReceivedAmount": 0,
                                    "currentDueAmount": 4450,
    */
-    TextView receiptNotv,registrationID,receiptDateTime,referredByName,testBillAmount,receivableAmount,totalReceivedAmount,currentDueAmount;
+    TextView receiptNotv,registrationID,receiptDateTime,referredByName,testBillAmount,receivableAmount,totalReceivedAmount,currentDueAmount,tv;
+
+    ArrayList<DetailLabReport> reportList;
+    RecyclerView recyclerView;
+    LabReportAdapter adapter;
+    LinearLayoutManager linearLayoutManager;
+    LoggedpatientDetail loggedpatientDetail;
+    LabReportModel labReportModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lab_report_detail);
+
+        reportList = new ArrayList<>();
 
         receiptNotv = findViewById(R.id.receiptNo);
         registrationID = findViewById(R.id.registrationID);
@@ -1257,11 +1271,13 @@ public class LabReportDetailActivity extends AppCompatActivity {
         receivableAmount = findViewById(R.id.receivableAmount);
         totalReceivedAmount = findViewById(R.id.totalReceivedAmount);
         currentDueAmount = findViewById(R.id.currentDueAmount);
+        recyclerView = findViewById(R.id.recycleListView);
+        tv = findViewById(R.id.tv);
 
 
         Intent i = getIntent();
-        LoggedpatientDetail loggedpatientDetail = (LoggedpatientDetail)i.getSerializableExtra("patientObj");
-        LabReportModel labReportModel = (LabReportModel) i.getSerializableExtra("reportObj");
+        loggedpatientDetail = (LoggedpatientDetail)i.getSerializableExtra("patientObj");
+        labReportModel = (LabReportModel) i.getSerializableExtra("reportObj");
         requestForLabReport(loggedpatientDetail.getToken(),labReportModel.getReceiptNo());
     }
 
@@ -1270,12 +1286,18 @@ public class LabReportDetailActivity extends AppCompatActivity {
         String tag_json_obj = "json_obj_req";
         String url ="http://203.190.9.108/api.paitent.ecure24.com/api/Labs/"+receiptNo;
 
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,
                 url, null,
                 new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
+
+                        pDialog.hide();
 /*
                         "receiptNo": "PL20170000002",
                                 "registrationID": "000001-01-15",
@@ -1288,14 +1310,38 @@ public class LabReportDetailActivity extends AppCompatActivity {
 */
 
                         try {
-                            receiptNotv.setText("receipt No: "+response.getString("receiptNo"));
-                            registrationID.setText("registration Id: "+response.getString("registrationID"));
-                            receiptDateTime.setText("receipt Date: "+response.getString("receiptDateTime"));
-                            referredByName.setText("referred By: "+response.getString("referredByName"));
-                            testBillAmount.setText("test Bill Amount: "+response.getString("testBillAmount"));
-                            receivableAmount.setText("receivable Amount: "+response.getString("receivableAmount"));
+                            receiptNotv.setText("Receipt No: "+response.getString("receiptNo"));
+                            registrationID.setText("Registration Id: "+response.getString("registrationID"));
+                            receiptDateTime.setText("Receipt Date: "+response.getString("receiptDateTime"));
+                            referredByName.setText("Referred By: "+response.getString("referredByName"));
+                            testBillAmount.setText("Test Bill Amount: "+response.getString("testBillAmount"));
+                            receivableAmount.setText("Receivable Amount: "+response.getString("receivableAmount"));
                             totalReceivedAmount.setText("TotalReceived Amount: "+response.getString("totalReceivedAmount"));
                             totalReceivedAmount.setText("Current Due Amount: "+response.getString("currentDueAmount"));
+
+                            for(int i=0 ;i<response.getJSONArray("labTestReportInfos").length();i++){
+                                DetailLabReport obj = new DetailLabReport(
+                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getString("reportNo"),
+                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getString("receiptNo"),
+                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getString("charge"),
+                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getString("deliveryDateTime"),
+                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getString("reportDateTime"),
+                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONObject("testServiceLabTestServiceInfo").getJSONObject("labReportTitle").getString("reportTitleName"),
+                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONObject("testServiceLabTestServiceInfo").getJSONObject("labSpecimen").getString("specimenName")
+
+                                );
+//                                response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(0).getString("result")
+//                                response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(0).getJSONObject("labTestServiceItemInfo").getString("reportingServiceName"),
+//                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(0).getJSONObject("labTestServiceItemInfo").getString("unit"),
+//                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(0).getJSONObject("labTestServiceItemInfo").getString("defaultResult"),
+//                                        response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(0).getJSONObject("labTestServiceItemInfo").getString("refferenceRange")
+                                reportList.add(obj);
+                            }
+
+                            adapter = new LabReportAdapter(LabReportDetailActivity.this,reportList,loggedpatientDetail,labReportModel);
+                            linearLayoutManager = new LinearLayoutManager(LabReportDetailActivity.this,LinearLayoutManager.HORIZONTAL,false);
+                            recyclerView.setLayoutManager(linearLayoutManager);
+                            recyclerView.setAdapter(adapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1307,6 +1353,7 @@ public class LabReportDetailActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                pDialog.hide();
                 // As of f605da3 the following should work
                 NetworkResponse response = error.networkResponse;
                 if (error instanceof ServerError && response != null) {

@@ -1,5 +1,6 @@
 package com.sayed.cardiocare;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -78,12 +79,17 @@ public class PatientDetailActivity extends AppCompatActivity {
         String tag_json_obj = "json_obj_req";
         String url ="http://203.190.9.108/api.paitent.ecure24.com/api/Labs";
 
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
         JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET,
                 url, null,
                 new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
+                        pDialog.hide();
 
                         for(int i=0; i<response.length(); i++){
                             try {
@@ -104,6 +110,7 @@ public class PatientDetailActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                pDialog.hide();
                 // As of f605da3 the following should work
                 NetworkResponse response = error.networkResponse;
                 if (error instanceof ServerError && response != null) {
