@@ -56,7 +56,7 @@ public class LabReportAdapter extends RecyclerView.Adapter<LabReportAdapter.View
 
         DetailLabReport obj = list.get(position);
 
-        holder.receiptNo.setText("Receipt No: "+obj.getReportNo());
+        holder.receiptNo.setText("Receipt No: "+obj.getReceiptNo());
         holder.charge.setText("Charge: "+obj.getCharge());
         holder.reportTitleName.setText("Report Title: "+obj.getReportTitleName());
         holder.specimenName.setText("Specimen Name: "+obj.getSpecimenName());

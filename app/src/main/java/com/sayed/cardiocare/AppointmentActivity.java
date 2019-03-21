@@ -1,6 +1,8 @@
 package com.sayed.cardiocare;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -333,8 +335,35 @@ public class AppointmentActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
 
-                            Log.i("Response",response.toString());
-                            tv.setText(response.toString());
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(AppointmentActivity.this);
+
+//                            tv.setText(response+"");
+
+                            try {
+                                builder1.setMessage("Appointment Booked. Your serial No is "+response.getString("serialNo"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            builder1.setCancelable(true);
+
+                            builder1.setPositiveButton(
+                                    "ok",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+//                            builder1.setNegativeButton(
+//                                    "No",
+//                                    new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int id) {
+//                                            dialog.cancel();
+//                                        }
+//                                    });
+
+                            AlertDialog alert11 = builder1.create();
+                            alert11.show();
 
                         }
                     }, new Response.ErrorListener() {
@@ -350,7 +379,39 @@ public class AppointmentActivity extends AppCompatActivity {
                                     HttpHeaderParser.parseCharset(response.headers, "utf-8"));
                             // Now you can use any deserializer to make sense of data
                             JSONObject obj = new JSONObject(res);
-                            tv.setText(res);
+
+//                            tv.setText(res);
+
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(AppointmentActivity.this);
+                            String msg = "";
+                            for (int i=0;i<obj.getJSONArray("messages").length();i++ ){
+                                msg = msg+obj.getJSONArray("messages").getString(i)+"\n";
+                            }
+//                            if(msg.equals("Sorry invalid time slot.")){
+//                                msg = "This Slot is booked. try another one";
+//                            }
+                            builder1.setMessage(msg);
+                            builder1.setCancelable(true);
+
+                            builder1.setPositiveButton(
+                                    "ok",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+
+//                            builder1.setNegativeButton(
+//                                    "No",
+//                                    new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int id) {
+//                                            dialog.cancel();
+//                                        }
+//                                    });
+
+                            AlertDialog alert11 = builder1.create();
+                            alert11.show();
+
                         } catch (UnsupportedEncodingException e1) {
                             // Couldn't properly decode data to string
                             e1.printStackTrace();

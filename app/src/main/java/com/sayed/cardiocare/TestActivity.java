@@ -17,17 +17,23 @@ import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 import com.sayed.cardiocare.Adapter.LabReportAdapter;
 import com.sayed.cardiocare.Adapter.TestReportAdapter;
 import com.sayed.cardiocare.Models.DetailLabReport;
 import com.sayed.cardiocare.Models.LabReportModel;
 import com.sayed.cardiocare.Models.LoggedpatientDetail;
+import com.sayed.cardiocare.Models.TestReportModel;
 import com.sayed.cardiocare.app.AppController;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,17 +44,19 @@ import java.util.Map;
 
         TextView receiptNotv,registrationID,receiptDateTime,referredByName,testBillAmount,receivableAmount,totalReceivedAmount,currentDueAmount,tv;
 
-        ArrayList<DetailLabReport> reportList;
+        ArrayList<TestReportModel> testList;
         RecyclerView recyclerView;
         TestReportAdapter adapter;
         LinearLayoutManager linearLayoutManager;
+        Gson gson;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_test);
 
-            reportList = new ArrayList<>();
+            testList = new ArrayList<>();
 
 //            receiptNotv = findViewById(R.id.receiptNo);
 //            registrationID = findViewById(R.id.registrationID);
@@ -61,12 +69,14 @@ import java.util.Map;
             recyclerView = findViewById(R.id.recycleListView);
             tv = findViewById(R.id.tv);
 
+            gson = new Gson();
+
 
             Intent i = getIntent();
             LoggedpatientDetail loggedpatientDetail = (LoggedpatientDetail)i.getSerializableExtra("patientObj");
             LabReportModel labReportModel = (LabReportModel) i.getSerializableExtra("reportObj");
             String reportNo = i.getStringExtra("reportNo");
-            Toast.makeText(this, "hi "+reportNo+" "+loggedpatientDetail.getToken()+labReportModel.getReceiptNo(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "hi "+reportNo+" "+loggedpatientDetail.getToken()+labReportModel.getReceiptNo(), Toast.LENGTH_SHORT).show();
             requestForTestReport(loggedpatientDetail.getToken(),labReportModel.getReceiptNo(),reportNo);
         }
 
@@ -99,11 +109,28 @@ import java.util.Map;
 //                                totalReceivedAmount.setText("Current Due Amount: "+response.getString("currentDueAmount"));
 
                                 for(int i=0 ;i<response.getJSONArray("labTestReportInfos").length();i++){
-                                    String data = response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONObject("reportNo").toString();
-                                    tv.setText(data);
-//                                    if (data.equals(reportNo)){
-//                                        tv.setText(response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices")+"");
-//                                    }
+
+                                    String data = response.getJSONArray("labTestReportInfos").getJSONObject(i).getString("reportNo");
+
+
+                                    if (data.equals(reportNo)){
+//                                        tv.setText(data+": "+response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices")+"");
+
+                                        for(int j =0; j<response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").length();j++){
+
+                                            TestReportModel obj = new TestReportModel(
+                                                    response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(j).getString("result"),
+                                                    response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(j).getJSONObject("labTestServiceItemInfo").getString("reportingServiceName"),
+                                                    response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(j).getJSONObject("labTestServiceItemInfo").getString("unit"),
+                                                    response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(j).getJSONObject("labTestServiceItemInfo").getString("defaultResult"),
+                                                    response.getJSONArray("labTestReportInfos").getJSONObject(i).getJSONArray("labTestReportServices").getJSONObject(j).getJSONObject("labTestServiceItemInfo").getString("refferenceRange")
+                                            );
+
+                                            testList.add(obj);
+
+                                        }
+                                        break;
+                                    }
 //                                    DetailLabReport obj = new DetailLabReport(
 //                                            response.getJSONArray("labTestReportInfos").getJSONObject(i).getString("reportNo"),
 //                                            response.getJSONArray("labTestReportInfos").getJSONObject(i).getString("receiptNo"),
@@ -122,10 +149,13 @@ import java.util.Map;
 //                                    reportList.add(obj);
                                 }
 
-//                                adapter = new LabReportAdapter(com.sayed.cardiocare.LabReportDetailActivity.this,reportList);
-//                                linearLayoutManager = new LinearLayoutManager(com.sayed.cardiocare.LabReportDetailActivity.this,LinearLayoutManager.HORIZONTAL,false);
-//                                recyclerView.setLayoutManager(linearLayoutManager);
-//                                recyclerView.setAdapter(adapter);
+                                if(testList.size() == 0){
+                                    tv.setText("Test Report is not Available Yet");
+                                }
+                                adapter = new TestReportAdapter(TestActivity.this,testList);
+                                linearLayoutManager = new LinearLayoutManager(TestActivity.this,LinearLayoutManager.VERTICAL,false);
+                                recyclerView.setLayoutManager(linearLayoutManager);
+                                recyclerView.setAdapter(adapter);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();

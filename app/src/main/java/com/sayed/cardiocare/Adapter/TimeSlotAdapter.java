@@ -2,6 +2,7 @@ package com.sayed.cardiocare.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -52,9 +53,10 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.Person
 
         holder.tv_time_slot.setText(slot.getTimeSlot());
         if(slot.getIsBooked().equals("true")){
-            holder.tv_booked.setText("Status: "+"Booked");
+            holder.tv_booked.setText("Booked");
+            holder.tv_booked.setBackgroundColor(Color.parseColor("#E71C23"));
         }else{
-            holder.tv_booked.setText("Status: "+"Available");
+            holder.tv_booked.setText("Available");
         }
 
         holder.tv_serial_num.setText("Serial no: "+slot.getSerialNo());
@@ -89,18 +91,22 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.Person
                     public void onClick(View v) {
                         // get position
                         int pos = getAdapterPosition();
-//                    // check if item still exists
                         if(pos != RecyclerView.NO_POSITION){
+                            if (list.get(pos).getIsBooked().equals("true")){
+                                Toast.makeText(context, "The Slot is booked", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Intent intent = new Intent(context, AppointmentActivity.class);
+                                intent.putExtra("slot_map_id",list.get(pos).getSlotId());
+                                intent.putExtra("time_slot",list.get(pos).getTimeSlot());
+                                intent.putExtra("dr_id",list.get(pos).getDrId());
+                                intent.putExtra("visit_date",list.get(pos).getVisitDate());
 
-                        Intent intent = new Intent(context, AppointmentActivity.class);
-                        intent.putExtra("slot_map_id",list.get(pos).getSlotId());
-                        intent.putExtra("time_slot",list.get(pos).getTimeSlot());
-                        intent.putExtra("dr_id",list.get(pos).getDrId());
-                        intent.putExtra("visit_date",list.get(pos).getVisitDate());
+                                context.startActivity(intent);
 
-                        context.startActivity(intent);
+    //                            Toast.makeText(context, "selected "+list.get(pos).getDrId()+" "+list.get(pos).getVisitDate(), Toast.LENGTH_SHORT).show();
+                            }
 
-//                            Toast.makeText(context, "selected "+list.get(pos).getDrId()+" "+list.get(pos).getVisitDate(), Toast.LENGTH_SHORT).show();
+
                         }
                     }
                 });

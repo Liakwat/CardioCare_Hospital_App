@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sayed.cardiocare.Models.DetailLabReport;
+import com.sayed.cardiocare.Models.TestReportModel;
 import com.sayed.cardiocare.R;
 
 import java.util.List;
@@ -23,11 +24,11 @@ public class TestReportAdapter extends RecyclerView.Adapter<TestReportAdapter.Vi
 
     private static final String TAG = ListAdapterWithRecycleView.class.getSimpleName();
 
-    private List<DetailLabReport> list;
+    private List<TestReportModel> list;
 
     private Context context;
 
-    public TestReportAdapter(Context context, List<DetailLabReport> list){
+    public TestReportAdapter(Context context, List<TestReportModel> list){
         this.list = list;
         this.context=context;
 
@@ -46,7 +47,7 @@ public class TestReportAdapter extends RecyclerView.Adapter<TestReportAdapter.Vi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
-        DetailLabReport obj = list.get(position);
+        TestReportModel obj = list.get(position);
 
 //        holder.reportTitleName.setText("Report Title: "+obj.getReportTitleName());
 //        holder.specimenName.setText("Specimen Name: "+obj.getSpecimenName());
