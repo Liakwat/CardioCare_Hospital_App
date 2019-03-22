@@ -1204,6 +1204,9 @@ package com.sayed.cardiocare;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -1226,6 +1229,7 @@ import com.sayed.cardiocare.Models.DetailLabReport;
 import com.sayed.cardiocare.Models.LabReportModel;
 import com.sayed.cardiocare.Models.LoggedpatientDetail;
 import com.sayed.cardiocare.app.AppController;
+import com.sayed.cardiocare.utils.CheckConnectivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1256,6 +1260,8 @@ public class LabReportDetailActivity extends AppCompatActivity {
     LoggedpatientDetail loggedpatientDetail;
     LabReportModel labReportModel;
 
+    CheckConnectivity checkConnectivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1276,10 +1282,40 @@ public class LabReportDetailActivity extends AppCompatActivity {
 
 
         Intent i = getIntent();
-        loggedpatientDetail = (LoggedpatientDetail)i.getSerializableExtra("patientObj");
+        loggedpatientDetail = (LoggedpatientDetail) i.getSerializableExtra("patientObj");
         labReportModel = (LabReportModel) i.getSerializableExtra("reportObj");
-        requestForLabReport(loggedpatientDetail.getToken(),labReportModel.getReceiptNo());
+        requestForLabReport(loggedpatientDetail.getToken(), labReportModel.getReceiptNo());
+
+
+        checkConnectivity = new CheckConnectivity();
+        registerNetworkBroadcastForNougat();
+
     }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterNetworkChanges();
+    }
+
+    private void registerNetworkBroadcastForNougat() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerReceiver(checkConnectivity, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            registerReceiver(checkConnectivity, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+    }
+
+    protected void unregisterNetworkChanges() {
+        try {
+            unregisterReceiver(checkConnectivity);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void requestForLabReport(final String accesstoken, final String receiptNo){
         // Post request

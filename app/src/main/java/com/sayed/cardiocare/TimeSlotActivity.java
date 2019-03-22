@@ -2,6 +2,8 @@ package com.sayed.cardiocare;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Build;
@@ -30,6 +32,7 @@ import com.sayed.cardiocare.Models.AppointmentRequest;
 import com.sayed.cardiocare.Models.PatientInfo;
 import com.sayed.cardiocare.Models.TimeSlot;
 import com.sayed.cardiocare.app.AppController;
+import com.sayed.cardiocare.utils.CheckConnectivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +54,7 @@ public class TimeSlotActivity extends AppCompatActivity implements DatePickerFra
     static String drName;
     static String drSp;
     Gson gson;
+    CheckConnectivity checkConnectivity;
 
     static String visitDate;
     static String consultationMainServiceCharges;
@@ -110,7 +114,39 @@ public class TimeSlotActivity extends AppCompatActivity implements DatePickerFra
 
             Log.i("json",json);
 
+            checkConnectivity = new CheckConnectivity();
+            registerNetworkBroadcastForNougat();
+
         }
+
+
+
+
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterNetworkChanges();
+    }
+
+    private void registerNetworkBroadcastForNougat() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerReceiver(checkConnectivity, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            registerReceiver(checkConnectivity, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+    }
+
+    protected void unregisterNetworkChanges() {
+        try {
+            unregisterReceiver(checkConnectivity);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
 
         public void showFragment(View view) {
             /**Show DialogFragment By Calling DatePickerFragment Class**/

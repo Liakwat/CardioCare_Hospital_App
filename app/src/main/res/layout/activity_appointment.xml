@@ -13,7 +13,8 @@
     android:layout_height="match_parent"
     tools:context=".AppointmentActivity"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:background="#EAF0F1">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

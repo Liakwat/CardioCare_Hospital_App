@@ -3,6 +3,9 @@ package com.sayed.cardiocare;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +35,7 @@ import com.sayed.cardiocare.Models.AppointmentRequest;
 import com.sayed.cardiocare.Models.PatientInfo;
 import com.sayed.cardiocare.Models.TimeSlot;
 import com.sayed.cardiocare.app.AppController;
+import com.sayed.cardiocare.utils.CheckConnectivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -108,7 +112,7 @@ response format
 public class AppointmentActivity extends AppCompatActivity {
 
     Gson gson;
-    TextView tv;
+//    TextView tv;
     String drId,timeSlot,slotId,visitDate;
     RadioButton fst,snd,report;
     RadioGroup services,sex;
@@ -116,13 +120,14 @@ public class AppointmentActivity extends AppCompatActivity {
     String sexVar;
     String selectedServiceId;
     EditText name,age,mobile;
+    CheckConnectivity checkConnectivity;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment);
-        tv = findViewById(R.id.tv);
+//        tv = findViewById(R.id.tv);
 
         fst = findViewById(R.id.fst);
         snd = findViewById(R.id.scnd);
@@ -150,17 +155,17 @@ public class AppointmentActivity extends AppCompatActivity {
 
                 if(checkedId == R.id.fst){
 
-                    tv.setText(serviceId.get("1st Visit"));
+//                    tv.setText(serviceId.get("1st Visit"));
                     selectedServiceId = serviceId.get("1st Visit");
 
                 }else if(checkedId == R.id.scnd){
 
-                    tv.setText(serviceId.get("2nd Visit"));
+//                    tv.setText(serviceId.get("2nd Visit"));
                     selectedServiceId = serviceId.get("2nd Visit");
 
                 }else if(checkedId == R.id.report){
 
-                    tv.setText(serviceId.get("Report Check"));
+//                    tv.setText(serviceId.get("Report Check"));
                     selectedServiceId = serviceId.get("Report Check");
 
                 }
@@ -175,17 +180,17 @@ public class AppointmentActivity extends AppCompatActivity {
                 if(checkedId == R.id.male){
 
                     sexVar = "male";
-                    tv.setText(sexVar);
+//                    tv.setText(sexVar);
 
                 }else if(checkedId == R.id.female){
 
                     sexVar = "female";
-                    tv.setText(sexVar);
+//                    tv.setText(sexVar);
 
                 }else if(checkedId == R.id.Others){
 
                     sexVar = "others";
-                    tv.setText(sexVar);
+//                    tv.setText(sexVar);
 
                 }
             }
@@ -217,8 +222,40 @@ public class AppointmentActivity extends AppCompatActivity {
 //
 //        Log.i("json",json);
 
+        checkConnectivity = new CheckConnectivity();
+        registerNetworkBroadcastForNougat();
 
     }
+
+
+
+
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterNetworkChanges();
+    }
+
+    private void registerNetworkBroadcastForNougat() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            registerReceiver(checkConnectivity, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            registerReceiver(checkConnectivity, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+    }
+
+    protected void unregisterNetworkChanges() {
+        try {
+            unregisterReceiver(checkConnectivity);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void click(View v){
 
@@ -325,7 +362,7 @@ public class AppointmentActivity extends AppCompatActivity {
         }
 
         Log.i("datatta",rootObj.toString());
-        tv.setText(rootObj.toString()+"");
+//        tv.setText(rootObj.toString()+"");
 
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
