@@ -52,7 +52,7 @@
                 android:id="@+id/id_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Your Cell id"
+                android:hint="Enter Your Id"
                 android:layout_marginBottom="10dp"/>
 
             <Button

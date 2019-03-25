@@ -37,7 +37,7 @@ public class CheckConnectivity extends BroadcastReceiver
                             .setPositiveButton("Close app", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
 
-                                    context.startActivity(new Intent(context, HomeActivity.class));
+//                                    context.startActivity(new Intent(context, HomeActivity.class));
                                     ((Activity)context).finish();
 //                                    ((Activity)context).finishAffinity();
 //                                    System.exit(0);
