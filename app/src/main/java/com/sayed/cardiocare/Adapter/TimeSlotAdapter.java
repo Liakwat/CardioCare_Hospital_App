@@ -57,6 +57,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.Person
             holder.tv_booked.setBackgroundColor(Color.parseColor("#E71C23"));
         }else{
             holder.tv_booked.setText("Available");
+            holder.tv_booked.setBackgroundColor(Color.parseColor("#10A881"));
         }
 
         holder.tv_serial_num.setText("Serial no: "+slot.getSerialNo());

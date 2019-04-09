@@ -156,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 speciality.put(response.getJSONObject(i).getString("specialityFullName"),response.getJSONObject(i).getString("id"));
                                 specialityName.add(response.getJSONObject(i).getString("specialityFullName"));
+
+                                Log.i("haha",response.getJSONObject(i).getString("specialityFullName")+"");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -168,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         VolleyLog.d("response", "Error: " + error.getMessage());
+                        Log.i("haha",error.getMessage()+"");
                         // hide the progress dialog
                         pDialog.hide();
                     }

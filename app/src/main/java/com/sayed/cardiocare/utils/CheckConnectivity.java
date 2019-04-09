@@ -50,8 +50,11 @@ public class CheckConnectivity extends BroadcastReceiver
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 } else {
-                    alertDialog.dismiss();
-                    Toast.makeText(context, "Connected", Toast.LENGTH_SHORT).show();
+                    if(alertDialog != null){
+                        alertDialog.dismiss();
+                    }
+
+//                    Toast.makeText(context, "Connected", Toast.LENGTH_SHORT).show();
                 }
             } catch (NullPointerException e) {
                 e.printStackTrace();

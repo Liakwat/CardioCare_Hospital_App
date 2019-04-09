@@ -31,34 +31,45 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <TextView
-            android:id="@+id/dr_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="title"
-            android:textSize="24sp"
-            android:gravity="center"/>
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/di"/>
+
+            <TextView
+                android:id="@+id/dr_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="title"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:paddingLeft="30dp"
+                />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/dr_employeeId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Body"
-            android:textSize="18sp"
             />
         <TextView
             android:id="@+id/dr_speciality"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Body"
-            android:textSize="18sp"
             />
         <TextView
             android:id="@+id/dr_bio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Body"
-            android:textSize="18sp"
             />
 
     </LinearLayout>

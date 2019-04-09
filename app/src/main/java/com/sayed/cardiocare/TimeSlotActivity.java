@@ -53,6 +53,7 @@ public class TimeSlotActivity extends AppCompatActivity implements DatePickerFra
     static String drId;
     static String drName;
     static String drSp;
+    static String selectedDate;
     Gson gson;
     CheckConnectivity checkConnectivity;
 
@@ -83,7 +84,8 @@ public class TimeSlotActivity extends AppCompatActivity implements DatePickerFra
             dr_sp.setText("Speciality: "+drSp);
             dr_id.setText("Id: "+drId);
 
-            getDoctorsSchedule(drId,new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
+            selectedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+            getDoctorsSchedule(drId,selectedDate);
 
 
             gson = new Gson();
@@ -159,7 +161,15 @@ public class TimeSlotActivity extends AppCompatActivity implements DatePickerFra
     public void onComplete(String date){
         clear();
 //        this.date.setText(date);
-        getDoctorsSchedule(drId,date);
+        selectedDate = date;
+        getDoctorsSchedule(drId,selectedDate);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        clear();
+        getDoctorsSchedule(drId,selectedDate);
     }
 
     public void  clear() {

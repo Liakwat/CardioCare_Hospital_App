@@ -20,7 +20,7 @@
     <android.support.v7.widget.CardView
         android:id="@+id/login_layout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="350dp"
         android:layout_marginTop="100dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -38,8 +38,8 @@
             android:text="Log In "
             android:textSize="20sp"
             android:textAlignment="center"
-            android:layout_marginBottom="10dp"
-            android:paddingTop="10dp"/>
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"/>
 
 
         <LinearLayout
@@ -76,15 +76,26 @@
                 android:textColor="#ffffff"/>
 
             <TextView
-                android:id="@+id/to_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Don't Have account? click here to Register"
-                android:onClick="trigger"
+                android:text="Don't Have account?"
                 android:textColor="#30336B"
                 android:textSize="18sp"
                 android:textAlignment="center"
-                android:layout_marginTop="30dp" />
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="5dp"/>
+
+            <TextView
+                android:id="@+id/to_register"
+                android:layout_width="70dp"
+                android:text="Register"
+                android:layout_height="25dp"
+                android:textAlignment="center"
+                android:onClick="trigger"
+                android:background="#3498DB"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"
+                />
 
         </LinearLayout>
 
@@ -101,7 +112,7 @@
     <android.support.v7.widget.CardView
         android:id="@+id/register_layout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="350dp"
         android:layout_marginTop="100dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -120,8 +131,8 @@
             android:text="Registration "
             android:textSize="20sp"
             android:textAlignment="center"
-            android:layout_marginBottom="10dp"
-            android:paddingTop="10dp"/>
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"/>
 
 
         <LinearLayout
@@ -157,15 +168,26 @@
                 android:textColor="#ffffff"/>
 
             <TextView
-                android:id="@+id/to_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Have account? click here to Login"
+                android:text="Have account?"
                 android:textColor="#30336B"
-                android:onClick="trigger"
                 android:textSize="18sp"
                 android:layout_marginTop="30dp"
                 android:textAlignment="center"
+                android:layout_marginBottom="5dp"
+                />
+
+            <TextView
+                android:id="@+id/to_login"
+                android:layout_width="70dp"
+                android:layout_height="25dp"
+                android:text="Login"
+                android:onClick="trigger"
+                android:background="#10A881"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center"
                 />
 
 
