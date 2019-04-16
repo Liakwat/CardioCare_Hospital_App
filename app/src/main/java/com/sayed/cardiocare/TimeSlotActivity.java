@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Build;
@@ -65,6 +66,12 @@ public class TimeSlotActivity extends AppCompatActivity implements DatePickerFra
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setIcon(R.mipmap.ic_launcher_cardiocare);
+            actionBar.setTitle("");
+
             setContentView(R.layout.activity_time_slot);
             date = findViewById(R.id.date);
             dr_name = findViewById(R.id.dr_name);

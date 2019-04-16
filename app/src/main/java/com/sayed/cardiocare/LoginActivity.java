@@ -4,16 +4,20 @@ package com.sayed.cardiocare;
         import android.content.DialogInterface;
         import android.content.Intent;
         import android.content.IntentFilter;
+        import android.content.SharedPreferences;
         import android.net.ConnectivityManager;
         import android.os.Build;
         import android.os.Handler;
         import android.support.design.widget.Snackbar;
         import android.support.v4.content.LocalBroadcastManager;
+        import android.support.v7.app.ActionBar;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.support.v7.widget.CardView;
         import android.util.Log;
         import android.view.View;
+        import android.widget.CheckBox;
+        import android.widget.CompoundButton;
         import android.widget.EditText;
         import android.widget.TextView;
         import android.widget.Toast;
@@ -41,6 +45,7 @@ package com.sayed.cardiocare;
 public class LoginActivity extends AppCompatActivity {
 
     TextView tv;
+    CheckBox rememberLogin;
 
     EditText mobileEt, idEtReg;
     EditText passEt, idEt;
@@ -52,6 +57,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setIcon(R.mipmap.ic_launcher_cardiocare);
+        actionBar.setTitle("");
+
         setContentView(R.layout.activity_login);
         tv = findViewById(R.id.tv);
         idEt = findViewById(R.id.id_et_log);
@@ -60,6 +71,24 @@ public class LoginActivity extends AppCompatActivity {
         idEtReg = findViewById(R.id.id_et);
         logCv = findViewById(R.id.login_layout);
         regCv = findViewById(R.id.register_layout);
+        rememberLogin = findViewById(R.id.rememberPass);
+
+
+        SharedPreferences prefs = getSharedPreferences("CardioCare_Sp", MODE_PRIVATE);
+        String remenerChecker = prefs.getString("isRemember", "false");
+
+
+        if (remenerChecker.equals("true")) {
+
+            rememberLogin.setChecked(true);
+
+            String myid = prefs.getString("id", "hi");
+            String mypass = prefs.getString("pass", "pl");
+
+            idEt.setText(myid);
+            passEt.setText(mypass);
+        }
+
 
         checkConnectivity = new CheckConnectivity();
         registerNetworkBroadcastForNougat();
@@ -75,6 +104,24 @@ public class LoginActivity extends AppCompatActivity {
                     .setActionTextColor(getResources().getColor(android.R.color.holo_red_light ))
                     .show();
         }
+
+        rememberLogin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+
+                    SharedPreferences.Editor editor = getSharedPreferences("CardioCare_Sp", MODE_PRIVATE).edit();
+                    editor.putString("isRemember", "true");
+                    editor.putString("id", idEt.getText().toString().trim());
+                    editor.putString("pass", passEt.getText().toString().trim());
+                    editor.apply();
+                }else {
+                    SharedPreferences.Editor editor = getSharedPreferences("CardioCare_Sp", MODE_PRIVATE).edit();
+                    editor.putString("isRemember", "false");
+                    editor.apply();
+                }
+            }
+        });
 
     }
 
@@ -103,7 +150,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginClick(View v){
+
         requestForLogIn();
+
     }
 
     public void registrationClick(View v){
@@ -266,7 +315,7 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             patient.put("mobileNo",mobileEt.getText().toString().trim());
-            patient.put("id",idEt.getText().toString().trim());
+            patient.put("id",idEtReg.getText().toString().trim());
         } catch (JSONException e) {
             e.printStackTrace();
         }
